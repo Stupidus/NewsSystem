@@ -5,41 +5,12 @@
  * @author Victor ANTOINE
  */
 class News {
-    private $id;
-    private $title;
-    private $text;
-    private $author;
-    private $date;
-    
     private $db;
     
     public function  __construct(PDO $db)
     {
         $this->db = $db;
-    }
-    
-    public function hydrate(array $donnees)
-    {
-        foreach($donnees as $key => $value)
-        {
-            switch($key)
-            {
-                case 'id':
-                    $this->$key = (int) $value;
-                    break;               
-                case 'title':
-                case 'text':
-                case 'author':
-                    $this->$key = (string) $value;
-                    break;
-                case 'date':
-                    $this->$key = $value;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+    }        
     
     public function add($title, $text, $author)
     {
@@ -52,6 +23,7 @@ class News {
             $errors = $q->errorInfo();
             throw new Exception("Error while adding a news (".$errors[2].").");
         }
+        $q->closeCursor();
     }
     
     public function get($id)
@@ -66,7 +38,8 @@ class News {
         if($res = $q->fetch(PDO::FETCH_ASSOC))
             return $res;
         else
-            throw new Exception("No match for id(".$id.").");        
+            throw new Exception("No match for id(".$id.").");
+        $q->closeCursor();
     }
     
     public function delete($id)
@@ -78,6 +51,22 @@ class News {
             $errors = $q->errorInfo();
             throw new Exception("Error while deleting a news (id:".$id.") (".$errors[2].").");
         }
+        $q->closeCursor();
+    }
+    
+    public function update($id, $title, $text, $author)
+    {
+        $q = $this->db->prepare("UPDATE news SET title = :title, text = :text, author = :author WHERE id = :id");
+        $q->bindValue(":title", $title);
+        $q->bindValue(":text", $text);
+        $q->bindValue(":author", $author);
+        $q->bindValue(":id", $id, PDO::PARAM_INT);
+        if(!$q->execute())
+        {
+            $errors = $q->errorInfo();
+            throw new Exception("Error while updating a news (id:".$id.") (".$errors[2].").");
+        }
+        $q->closeCursor();
     }
 }
 
