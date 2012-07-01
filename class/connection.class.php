@@ -1,8 +1,8 @@
 <?php
 /**
- * Description of connection
+ * Description of Connection
  *
- * @author Victor
+ * @author Victor ANTOINE
  */
 class Connection {
     private $db;
