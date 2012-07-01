@@ -54,7 +54,7 @@ class News {
         }
     }
     
-    public function getNews($id)
+    public function get($id)
     {
         $q = $this->db->prepare("SELECT * FROM news WHERE id = :id");
         $q->bindValue(":id", $id, PDO::PARAM_INT);
@@ -67,6 +67,17 @@ class News {
             return $res;
         else
             throw new Exception("No match for id(".$id.").");        
+    }
+    
+    public function delete($id)
+    {
+        $q = $this->db->prepare('DELETE FROM news WHERE id = :id');
+        $q->bindValue(':id', $id);
+        if(!$q->execute())
+        {
+            $errors = $q->errorInfo();
+            throw new Exception("Error while deleting a news (id:".$id.") (".$errors[2].").");
+        }
     }
 }
 

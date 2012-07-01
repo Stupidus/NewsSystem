@@ -14,7 +14,7 @@
         {
             try {
                 $news->add($_POST["title"], $_POST["text"], $_POST["author"]);
-                echo "News ajoutée";
+                echo "News added";
             }
             catch(Exception $e) {
                 echo $e->getMessage();
