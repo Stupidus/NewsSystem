@@ -63,8 +63,7 @@ class News {
             $errors = $q->errorInfo();
             throw new Exception("Error while getting a news (".$errors[2].").");
         }
-        $res = $q->fetch(PDO::FETCH_ASSOC);
-        if($res)
+        if($res = $q->fetch(PDO::FETCH_ASSOC))
             return $res;
         else
             throw new Exception("No match for id(".$id.").");        
